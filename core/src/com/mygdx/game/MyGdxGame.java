@@ -5,8 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
@@ -28,6 +30,8 @@ public class MyGdxGame extends ApplicationAdapter {
 	private Rectangle bucket;
 	private Array<Rectangle> raindrops;
 	private long lastDropTime;
+	private int score = 0;
+	private BitmapFont font;
 	@Override
 	public void create () {
 		camera = new OrthographicCamera();
@@ -51,6 +55,9 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		raindrops = new Array<Rectangle>();
 		spawnRaindrop();
+
+		font = new BitmapFont();
+		font.setColor(Color.BLUE);
 	}
 
 	@Override
@@ -64,6 +71,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		for(Rectangle raindrop: raindrops) {
 			batch.draw(dropImage, raindrop.x, raindrop.y);
 		}
+		font.draw(batch, "Score: "+score, 700, 420);
 		batch.end();
 
 		if(TimeUtils.nanoTime() - lastDropTime > 1000000000) spawnRaindrop();
@@ -74,6 +82,7 @@ public class MyGdxGame extends ApplicationAdapter {
 			if(raindrop.overlaps(bucket)) {
 				dropSound.play();
 				iter.remove();
+				score++;
 			}
 		}
 
@@ -107,5 +116,6 @@ public class MyGdxGame extends ApplicationAdapter {
 			dropSound.dispose();
 			rainMusic.dispose();
 			batch.dispose();
+			font.dispose();
 	}
 }
